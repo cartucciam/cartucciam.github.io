@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="{{ $.Site.Language }}">
+  <head>
+    {{ block "title" . }}
+      <title>
+        {{ if .IsHome }}{{ $.Site.Title }}{{ with $.Site.Params.Subtitle }} —
+        {{ . }}{{ end }}{{ else }}{{ .Title }} ::
+        {{ $.Site.Title }}{{ with $.Site.Params.Subtitle }} — {{ . }}{{ end }}{{ end }}
+      </title>
+    {{ end }}
+    {{ partial "head.html" . }}
+  </head>
+  <body class="gameboy-body {{ if ne $.Site.Params.defaultTheme "light" -}} dark-theme {{- end -}}">
+    <div id="gameboy-scene" class="gameboy-scene">
+      <div id="gameboy-shell" class="gameboy-shell">
+        <div class="gameboy-housing">
+          <div class="gameboy-logo">GAME·SITE</div>
+          <div class="gameboy-screen">
+            <div class="gameboy-screen-inner">
+              <div class="gameboy-content" id="gameboy-content">
+                <div class="container">
+                  {{ partial "header.html" . }}
+
+                  <div class="content">
+                    {{ block "main" . }} {{ end }}
+                  </div>
+
+                  {{ block "footer" . }}
+                    {{ partial "footer.html" . }}
+                  {{ end }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="gameboy-controls">
+            <div class="gameboy-dpad">
+              <span class="dpad-vertical"></span>
+              <span class="dpad-horizontal"></span>
+            </div>
+            <div class="gameboy-buttons">
+              <span class="gameboy-button">A</span>
+              <span class="gameboy-button">B</span>
+            </div>
+            <div class="gameboy-speaker">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var shell = document.getElementById('gameboy-shell');
+        var body = document.body;
+        function finishIntro() {
+          if (!body.classList.contains('gameboy-zoomed')) {
+            body.classList.add('gameboy-zoomed');
+          }
+        }
+        if (shell) {
+          shell.addEventListener('animationend', function (event) {
+            if (event.animationName === 'gameboyIntro') {
+              finishIntro();
+            }
+          });
+          window.setTimeout(finishIntro, 6000);
+        }
+      });
+    </script>
+
+    {{ if $.Site.GoogleAnalytics }}
+      {{ template "_internal/google_analytics.html" . }}
+    {{ end }}
+  </body>
+</html>
